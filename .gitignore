@@ -1,0 +1,53 @@
+﻿# Secrets and environment
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python environments and caches
+.venv/
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Datasets and local databases
+data/raw/
+data/processed/
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated models, metrics and logs
+models/*.joblib
+models/**/*.joblib
+models/*.json
+models/**/*.json
+models/*.log
+models/**/*.log
+
+# Academic/private documents and generated outputs
+**/*research*
+**/*paper*
+**/*conference*
+**/*thesis*
+**/*dissertation*
+**/*shap*case*
+**/*.pdf
+**/*.docx
+research/
+research_output/
+research_outputs/
+papers/
+publications/
+
+# Temporary and editor files
+tmp/
+.vscode/
+.DS_Store
+Thumbs.db

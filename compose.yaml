@@ -1,0 +1,40 @@
+services:
+  api:
+    build: .
+    environment:
+      NETSENTINEL_API_KEY: ${NETSENTINEL_API_KEY:-}
+      NETSENTINEL_RATE_LIMIT_PER_MINUTE: ${NETSENTINEL_RATE_LIMIT_PER_MINUTE:-0}
+    command: uvicorn app.api.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+  dashboard:
+    build: .
+    command: streamlit run app/dashboard/Home.py --server.address 0.0.0.0 --server.port 8501
+    environment:
+      NETSENTINEL_API: http://api:8000
+      NETSENTINEL_API_KEY: ${NETSENTINEL_API_KEY:-}
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_DB: netsentinel
+      POSTGRES_USER: netsentinel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env before enabling the postgres profile}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
